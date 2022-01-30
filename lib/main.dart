@@ -3,9 +3,11 @@ import 'package:community_fridge/food_entry.dart';
 import 'package:community_fridge/login_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => AppModel(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -41,8 +43,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -53,7 +53,8 @@ class _HomePageState extends State<HomePage> {
   // always marked "final".
 
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = [
     FoodEntryWidget(),
     Text('Current Contents'),
@@ -61,14 +62,13 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onItemTapped(int index) {
-    setState( () {
+    setState(() {
       _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -107,15 +107,17 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.pen), label: 'Food Entry'),
-          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.box), label: 'Contents'),
-          BottomNavigationBarItem(icon: Icon(Icons.multiline_chart), label: 'Stats')
-        ],
-        currentIndex: _selectedIndex,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.pen), label: 'Food Entry'),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.box), label: 'Contents'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.multiline_chart), label: 'Stats')
+          ],
+          currentIndex: _selectedIndex,
           selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped
-      ),
+          onTap: _onItemTapped),
     );
   }
 }

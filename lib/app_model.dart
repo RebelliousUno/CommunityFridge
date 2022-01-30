@@ -1,39 +1,40 @@
 import 'dart:core';
 
-class AppModel {
-  static String? _sessionId;
-  static String? _name;
-  static DateTime _selectedDate = DateTime.now();
+import 'package:flutter/foundation.dart';
 
-  static DateTime getDate() {
-    return _selectedDate;
-  }
+class AppModel extends ChangeNotifier {
+  String? _sessionId;
+  String? _name;
+  DateTime _selectedDate = DateTime.now();
 
-  static increaseDate() {
+  DateTime get selectedDate => _selectedDate;
+
+  String? get name => _name;
+
+  String? get sessionId => _sessionId;
+
+  void increaseDate() {
     _selectedDate = _selectedDate.add(Duration(days: 1));
+    notifyListeners();
   }
 
-  static decreaseDate() {
+  void decreaseDate() {
     _selectedDate = _selectedDate.subtract(Duration(days: 1));
+    notifyListeners();
   }
 
-  static setDate(DateTime date) {
+  set selectedDate(DateTime date) {
     _selectedDate = date;
+    notifyListeners();
   }
 
-  static String? getName() {
-    return _name;
-  }
-
-  static String? setName(String name) {
+  set name(String? name) {
     _name = name;
+    notifyListeners();
   }
 
-  static String? getSessionId() {
-    return _sessionId;
-  }
-
-  static setSessionId(String sessionId) {
+  set sessionId(String? sessionId) {
     _sessionId = sessionId;
+    notifyListeners();
   }
 }

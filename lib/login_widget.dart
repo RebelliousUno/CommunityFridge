@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'app_model.dart';
 
@@ -8,52 +9,44 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  void updateSessionID(String sessionId) {
-    setState(() {
-      AppModel.setSessionId(sessionId);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (AppModel.getSessionId()?.isNotEmpty ?? false) {
-      return LoggedInWidget(updateSessionID);
-    } else {
-      return NotLoggedInWidget(updateSessionID);
-    }
+    return Consumer<AppModel>(builder: (context, appModel, child) {
+      if (appModel.sessionId?.isNotEmpty ?? false) {
+        return LoggedInWidget();
+      } else {
+        return NotLoggedInWidget();
+      }
+    });
   }
 }
 
 class LoggedInWidget extends StatefulWidget {
-  void Function(String sessionId) _updateSessionId;
-
-  LoggedInWidget(this._updateSessionId);
-
   @override
   State<LoggedInWidget> createState() => _LoggedInWidget();
   final ButtonStyle style =
-  ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 }
 
 class _LoggedInWidget extends State<LoggedInWidget> {
-
   @override
   Widget build(BuildContext context) {
-    return Row(children: [Text('Logged In ${AppModel.getSessionId()}'),ElevatedButton(
-    style: widget.style,
-    child: const Text('Log Out'),
-    onPressed: () {
-    widget._updateSessionId("");
-    },
-    )]);
+    return Consumer<AppModel>(builder: (context, appModel, child) {
+      return Row(children: [
+        Text('Logged In ${appModel.sessionId}'),
+        ElevatedButton(
+          style: widget.style,
+          child: const Text('Log Out'),
+          onPressed: () {
+            appModel.sessionId = "";
+          },
+        )
+      ]);
+    });
   }
 }
 
 class NotLoggedInWidget extends StatefulWidget {
-  void Function(String sessionId) _updateSessionId;
-
-  NotLoggedInWidget(this._updateSessionId);
-
   @override
   State<NotLoggedInWidget> createState() => _NotLoggedInWidget();
   final ButtonStyle style =
@@ -63,12 +56,14 @@ class NotLoggedInWidget extends StatefulWidget {
 class _NotLoggedInWidget extends State<NotLoggedInWidget> {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: widget.style,
-      child: const Text('Log In'),
-      onPressed: () {
-        widget._updateSessionId("asklhdlkah");
-      },
-    );
+    return Consumer<AppModel>(builder: (context, appModel, child) {
+      return ElevatedButton(
+        style: widget.style,
+        child: const Text('Log In'),
+        onPressed: () {
+          appModel.sessionId = "asklhdlkah";
+        },
+      );
+    });
   }
 }
