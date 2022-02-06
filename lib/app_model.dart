@@ -13,6 +13,14 @@ class AppModel extends ChangeNotifier {
 
   String? get sessionId => _sessionId;
 
+  Map<String, String?> _fridgeEntry = Map();
+  Map<String, String?> get fridgeEntry => _fridgeEntry;
+
+  void addFridgeEntry(String key, String? value) {
+    _fridgeEntry[key] = value;
+  }
+
+
   void increaseDate() {
     _selectedDate = _selectedDate.add(Duration(days: 1));
     notifyListeners();
