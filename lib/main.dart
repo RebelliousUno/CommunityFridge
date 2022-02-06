@@ -3,6 +3,7 @@ import 'package:community_fridge/food_entry.dart';
 import 'package:community_fridge/login_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'High Green Community Fridge',
+      localizationsDelegates: const [FormBuilderLocalizations.delegate],
       theme: ThemeData(
         // This is the theme of your application.
         //

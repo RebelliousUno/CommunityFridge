@@ -1,6 +1,8 @@
 import 'package:community_fridge/app_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
 import 'date_widget.dart';
@@ -43,13 +45,13 @@ class _FoodEntryState extends State<FoodEntryWidget>
           ),
           Expanded(
               child: TabBarView(
-                controller: _controller,
-                children: [
-                  SingleChildScrollView(child: FridgeIn()),
-                  Text('Freezer In'),
-                  Text('Food Out')
-                ],
-              ))
+            controller: _controller,
+            children: [
+              SingleChildScrollView(child: FridgeIn()),
+              Text('Freezer In'),
+              Text('Food Out')
+            ],
+          ))
         ]);
   }
 }
@@ -78,27 +80,28 @@ class FridgeIn extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _FridgeInState();
   final ButtonStyle style =
-  ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 }
 
 class _FridgeInState extends State<FridgeIn> {
   void submitEntry(AppModel model) {
-    model.fridgeEntry;
+    _formKey.currentState?.save();
+    if (_formKey.currentState?.validate() == true) {
+      var submitted = model.submit(_formKey.currentState?.fields);
+      submitted.then((value) {
+        if (value) {
+          _formKey.currentState?.reset();
+        }
+      });
+    }
   }
-  _FoodWho? _who;
 
-  void foodWhoRadioChanged(_FoodWho? value) {
-    setState(() {
-      _who = value;
-    });
-  }
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AppModel>(builder: (context, model, child) {
-      return Form(
+      return FormBuilder(
           key: _formKey,
           child: Column(
             children: [
@@ -112,24 +115,27 @@ class _FridgeInState extends State<FridgeIn> {
                   "Fruit, veg, bagged salad", "key_salad", true),
               FoodDescriptionWidget("Bread", "key_bread", true),
               FoodDescriptionWidget("Other", "key_other", true),
-              RadioListTile<_FoodWho>(
-                title: const Text('Local Household'),
-                value: _FoodWho.household,
-                groupValue: _who,
-                onChanged: (_FoodWho? value) {
-                  foodWhoRadioChanged(value);
+              FormBuilderRadioGroup(
+                name: 'key_source',
+                validator: FormBuilderValidators.required(context),
+                options: [
+                  'Local Household',
+                  'Business or Retailer',
+                ]
+                    .map((lang) => FormBuilderFieldOption(value: lang))
+                    .toList(growable: false),
+              ),
+              FormBuilderTextField(
+                name: 'specify',
+                decoration: InputDecoration(labelText: 'If Business or Retailer, please specify'),
+                validator: (val) {
+                  if (_formKey.currentState?.fields['key_source']?.value == 'Business or Retailer' &&
+                      (val == null || val.isEmpty)) {
+                    return 'Please Specify';
+                  }
+                  return null;
                 },
               ),
-              RadioListTile<_FoodWho>(
-                title: const Text('Business or Retailer'),
-                value: _FoodWho.retailer,
-                groupValue: _who,
-                onChanged: (_FoodWho? value) {
-                  foodWhoRadioChanged(value);
-                },
-              ),
-              if (_who == _FoodWho.retailer)
-                FoodDescriptionWidget("Retailer?", "key_retailer", false),
               FoodDescriptionWidget("Weight in grams", "key_weight", true),
               ElevatedButton(
                   style: widget.style,
@@ -148,8 +154,8 @@ class FoodDescriptionWidget extends StatelessWidget {
   final String _modelKey;
   final bool _digitsOnly;
 
-  FoodDescriptionWidget(this._foodDescription, this._modelKey,
-      this._digitsOnly);
+  FoodDescriptionWidget(
+      this._foodDescription, this._modelKey, this._digitsOnly);
 
   @override
   Widget build(BuildContext context) {
@@ -158,16 +164,14 @@ class FoodDescriptionWidget extends StatelessWidget {
         Expanded(flex: 8, child: Text(_foodDescription)),
         Expanded(
             flex: 2,
-            child: TextFormField(
-              onSaved: (String? value) {
-                model.addFridgeEntry(_modelKey, value);
-              },
+            child: FormBuilderTextField(
               inputFormatters: [
                 if (_digitsOnly) FilteringTextInputFormatter.digitsOnly
               ],
               decoration: InputDecoration(border: OutlineInputBorder()),
-              keyboardType: _digitsOnly ? TextInputType.number : TextInputType
-                  .none,
+              keyboardType:
+                  _digitsOnly ? TextInputType.number : TextInputType.none,
+              name: _modelKey,
             )),
       ]);
     });
