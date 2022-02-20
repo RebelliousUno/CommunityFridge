@@ -6,12 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
+import 'contents.dart';
+
 void main() {
-  runApp(
-      ChangeNotifierProvider(create: (context) => AppModel(), child: MyApp()));
+  runApp(ChangeNotifierProvider(
+      create: (context) => AppModel(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(title: 'High Green Community Fridge'),
+      home: const HomePage(title: 'High Green Community Fridge'),
     );
   }
 }
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatefulWidget {
   final String title;
 
-  HomePage({Key? key, required this.title}) : super(key: key);
+  const HomePage({Key? key, required this.title}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -55,12 +59,14 @@ class _HomePageState extends State<HomePage> {
   // always marked "final".
 
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = [
-    Expanded(child: FoodEntryWidget()),
-    Expanded(child: Text('Current Contents')),
-    Expanded(child: Text('Stats'))
+
+  static final List<Widget> _widgetOptions = [
+    const Expanded(
+        child:
+            Padding(padding: EdgeInsets.all(16.0), child: FoodEntryWidget())),
+    const Expanded(
+        child: Padding(padding: EdgeInsets.all(16.0), child: ContentsWidget())),
+    const Expanded(child: Text('Stats'))
   ];
 
   void _onItemTapped(int index) {
@@ -90,13 +96,13 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            LoginWidget(),
+            const LoginWidget(),
             _widgetOptions.elementAt(_selectedIndex),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-          items: [
+          items: const [
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.pen), label: 'Food Entry'),
             BottomNavigationBarItem(

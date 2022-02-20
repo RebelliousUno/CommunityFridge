@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'app_model.dart';
 
 class DateWidget extends StatefulWidget {
+  const DateWidget({Key? key}) : super(key: key);
+
   @override
   State<DateWidget> createState() => _DateWidgetState();
 }
@@ -27,15 +29,21 @@ class _DateWidgetState extends State<DateWidget> {
       return Row(
         children: [
           IconButton(
-              onPressed: model.decreaseDate, icon: Icon(Icons.chevron_left)),
-          Text(DateFormat('dd/MM/yyyy').format(model.selectedDate)),
+              onPressed: model.decreaseDate,
+              icon: const Icon(Icons.chevron_left)),
+          Expanded(
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(DateFormat('d MMMM yyyy').format(model.selectedDate)),
+            IconButton(
+                onPressed: () {
+                  datePicker(model);
+                },
+                icon: const Icon(Icons.calendar_today))
+          ])),
           IconButton(
-              onPressed: () {
-                datePicker(model);
-              },
-              icon: Icon(Icons.calendar_today)),
-          IconButton(
-              onPressed: model.increaseDate, icon: Icon(Icons.chevron_right))
+              onPressed: model.increaseDate,
+              icon: const Icon(Icons.chevron_right))
         ],
       );
     });

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'app_model.dart';
 
 class LoginWidget extends StatefulWidget {
+  const LoginWidget({Key? key}) : super(key: key);
+
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
 }
@@ -22,6 +24,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 }
 
 class LoggedInWidget extends StatefulWidget {
+  LoggedInWidget({Key? key}) : super(key: key);
+
   @override
   State<LoggedInWidget> createState() => _LoggedInWidget();
   final ButtonStyle style =
@@ -47,6 +51,8 @@ class _LoggedInWidget extends State<LoggedInWidget> {
 }
 
 class NotLoggedInWidget extends StatefulWidget {
+  NotLoggedInWidget({Key? key}) : super(key: key);
+
   @override
   State<NotLoggedInWidget> createState() => _NotLoggedInWidget();
   final ButtonStyle style =
